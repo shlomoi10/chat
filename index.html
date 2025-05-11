@@ -229,55 +229,30 @@
     <!-- סקריפט של Dialogflow Messenger -->
     <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
     
-    <!-- הגדרת חלונית הצ'אט -->
+    <!-- הגדרת חלונית הצ'אט - הקוד המקורי שעובד -->
     <df-messenger
-        project-id="crm-hanivcheret-2025"
-        agent-id="eec6465a-e3b3-4af2-9c53-9d2b667d04c7"
-        language-code="iw"
-        chat-title="תשאול עובדים יומי"
-        chat-icon="https://www.gstatic.com/dialogflow-console/common/assets/integrations/icons/messenger-cx-icon.svg"
-        wait-open="true"
-        expand="true"
-        max-query-length="-1">
-        <df-messenger-chat-bubble
-            chat-title="תשאול עובדים"
-            icon="https://www.gstatic.com/dialogflow-console/common/assets/integrations/icons/messenger-cx-icon.svg">
-        </df-messenger-chat-bubble>
+      project-id="crm-hanivcheret-2025"
+      agent-id="eec6465a-e3b3-4af2-9c53-9d2b667d04c7"
+      language-code="iw"
+      max-query-length="-1">
+      <df-messenger-chat-bubble
+        chat-title="תשאול עובדים">
+      </df-messenger-chat-bubble>
     </df-messenger>
     
-    <!-- סקריפט נוסף לתיקון RTL -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // המתנה לטעינת הצ'אט
-            setTimeout(function() {
-                // חיפוש אלמנטים בתוך צל ה-shadow DOM
-                const dfMessenger = document.querySelector('df-messenger');
-                if (dfMessenger) {
-                    // הוספת מאזין לאירוע פתיחת הצ'אט
-                    dfMessenger.addEventListener('df-messenger-loaded', () => {
-                        console.log('חלונית הצ\'אט נטענה');
-                        
-                        // הוספת סגנון נוסף לתיקון RTL
-                        const style = document.createElement('style');
-                        style.textContent = `
-                            df-messenger-chat {
-                                direction: rtl !important;
-                            }
-                            df-message-list {
-                                direction: rtl !important;
-                            }
-                            df-messenger-user-message {
-                                text-align: right !important;
-                            }
-                            df-messenger-bot-message {
-                                text-align: right !important;
-                            }
-                        `;
-                        document.head.appendChild(style);
-                    });
-                }
-            }, 1000);
-        });
-    </script>
+    <!-- סגנון המקורי שעובד -->
+    <style>
+      df-messenger {
+        z-index: 999;
+        position: fixed;
+        --df-messenger-font-color: #000;
+        --df-messenger-font-family: Google Sans;
+        --df-messenger-chat-background: #f3f6fc;
+        --df-messenger-message-user-background: #d3e3fd;
+        --df-messenger-message-bot-background: #fff;
+        bottom: 16px;
+        right: 16px;
+      }
+    </style>
 </body>
 </html>
