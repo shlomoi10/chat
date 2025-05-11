@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>תשאול עובדים - צ'אט מלא</title>
+    
+    <!-- קישור לסגנון של Dialogflow Messenger -->
+    <link rel="stylesheet" href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css">
+    
+    <!-- פונטים של Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #1565C0;
+            --secondary-color: #0D47A1;
+            --accent-color: #2196F3;
+            --light-bg: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-radius: 12px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Heebo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            direction: rtl;
+            text-align: right;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 500;
+        }
+        
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        /* עיצוב מכולת הצ'אט המותאמת */
+        .custom-chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        
+        .chat-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .chat-header-title {
+            display: flex;
+            align-items: center;
+        }
+        
+        .chat-header-icon {
+            width: 24px;
+            height: 24px;
+            margin-left: 10px;
+        }
+        
+        .restart-button {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 6px 12px;
+            font-family: 'Heebo', sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+        
+        .restart-button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .restart-button svg {
+            margin-left: 6px;
+            width: 16px;
+            height: 16px;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* עיצוב הצ'אט של Dialogflow */
+        df-messenger {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            --df-messenger-font-color: #333;
+            --df-messenger-font-family: 'Heebo', sans-serif;
+            --df-messenger-chat-background: #f8f9fc;
+            --df-messenger-message-user-background: #E3F2FD;
+            --df-messenger-message-bot-background: #fff;
+            --df-messenger-button-border-color: var(--primary-color);
+            --df-messenger-button-text-color: var(--primary-color);
+            --df-messenger-chat-border-radius: 0;
+            --df-messenger-input-box-color: #fff;
+            --df-messenger-input-border-color: #e0e0e0;
+            --df-messenger-input-padding: 12px;
+            --df-messenger-send-icon-color: var(--primary-color);
+            --df-messenger-chip-border-color: var(--primary-color);
+            --df-messenger-chat-padding: 16px;
+        }
+        
+        /* הסתרת הבועה ואלמנטים אחרים שלא צריכים */
+        df-messenger::part(chat-wrapper) {
+            margin: 0 !important;
+            max-height: none !important;
+            height: 100% !important;
+            width: 100% !important;
+            position: relative !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            box-shadow: none !important;
+        }
+        
+        df-messenger::part(chat-bubble) {
+            display: none !important;
+        }
+        
+        df-messenger::part(messenger-titlebar) {
+            display: none !important;
+        }
+        
+        df-messenger::part(chat-wrapper) {
+            border-radius: 0 !important;
+        }
+        
+        /* התאמה למובייל */
+        @media (max-width: 768px) {
+            .chat-container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>מערכת תשאול עובדים</h1>
+    </header>
+    
+    <div class="chat-container">
+        <div class="custom-chat">
+            <div class="chat-header">
+                <div class="chat-header-title">
+                    <img src="https://www.gstatic.com/dialogflow-console/common/assets/integrations/icons/messenger-cx-icon.svg" alt="צ'אט" class="chat-header-icon">
+                    <span>תשאול עובדים יומי</span>
+                </div>
+                <button id="restart-chat" class="restart-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+                    </svg>
+                    התחל מחדש
+                </button>
+            </div>
+            <div class="chat-messages">
+                <!-- Dialogflow Messenger -->
+                <df-messenger
+                  project-id="crm-hanivcheret-2025"
+                  agent-id="eec6465a-e3b3-4af2-9c53-9d2b667d04c7"
+                  language-code="iw"
+                  expand="true"
+                  max-query-length="-1">
+                </df-messenger>
+            </div>
+        </div>
+    </div>
+    
+    <!-- סקריפט של Dialogflow Messenger -->
+    <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
+    
+    <!-- סקריפט להפעלת הצ'אט אוטומטית ולחצן התחלה מחדש -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let dfMessenger;
+            
+            // המתנה קצרה לטעינת הצ'אט
+            setTimeout(function() {
+                dfMessenger = document.querySelector('df-messenger');
+                if (dfMessenger) {
+                    // פתיחת הצ'אט אוטומטית
+                    dfMessenger.addEventListener('df-messenger-loaded', () => {
+                        console.log('הצ\'אט נטען');
+                        // פתיחת הצ'אט אוטומטית
+                        dfMessenger.renderCustomText('ברוכים הבאים לתשאול העובדים היומי');
+                    });
+                }
+            }, 1000);
+            
+            // הוספת האזנה ללחצן התחלה מחדש
+            const restartButton = document.getElementById('restart-chat');
+            if (restartButton) {
+                restartButton.addEventListener('click', function() {
+                    // יצירת אלמנט חדש להחלפת הקיים
+                    const chatMessages = document.querySelector('.chat-messages');
+                    const oldDfMessenger = document.querySelector('df-messenger');
+                    
+                    if (chatMessages && oldDfMessenger) {
+                        // הסרת האלמנט הקיים
+                        chatMessages.removeChild(oldDfMessenger);
+                        
+                        // יצירת אלמנט חדש
+                        const newDfMessenger = document.createElement('df-messenger');
+                        newDfMessenger.setAttribute('project-id', 'crm-hanivcheret-2025');
+                        newDfMessenger.setAttribute('agent-id', 'eec6465a-e3b3-4af2-9c53-9d2b667d04c7');
+                        newDfMessenger.setAttribute('language-code', 'iw');
+                        newDfMessenger.setAttribute('expand', 'true');
+                        newDfMessenger.setAttribute('max-query-length', '-1');
+                        
+                        // הוספת האלמנט החדש ל-DOM
+                        chatMessages.appendChild(newDfMessenger);
+                        
+                        // המתנה לטעינה ושליחת הודעת פתיחה
+                        setTimeout(function() {
+                            newDfMessenger.addEventListener('df-messenger-loaded', () => {
+                                console.log('הצ\'אט הותחל מחדש');
+                                newDfMessenger.renderCustomText('ברוכים הבאים לתשאול העובדים היומי');
+                            });
+                        }, 1000);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
