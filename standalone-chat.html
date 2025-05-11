@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מערכת תשאול עובדים - עמוד עצמאי</title>
+    
+    <!-- קישור לסגנון של Dialogflow Messenger -->
+    <link rel="stylesheet" href="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/themes/df-messenger-default.css">
+    
+    <!-- פונטים של Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- סגנונות נוספים -->
+    <style>
+        :root {
+            --primary-color: #1565C0;
+            --secondary-color: #0D47A1;
+            --accent-color: #2196F3;
+            --light-bg: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-radius: 12px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Heebo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            direction: rtl;
+            text-align: right;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        .info-box {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .info-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        h2 {
+            color: var(--primary-color);
+            font-size: 24px;
+            margin-bottom: 15px;
+            font-weight: 500;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--accent-color);
+            border-radius: 3px;
+        }
+        
+        p {
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+        
+        ul {
+            padding-right: 20px;
+            margin: 15px 0;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        /* עיצוב חלונית הצ'אט */
+        df-messenger {
+            z-index: 999;
+            position: fixed;
+            --df-messenger-font-color: #333;
+            --df-messenger-font-family: 'Heebo', sans-serif;
+            --df-messenger-chat-background: #f8f9fc;
+            --df-messenger-message-user-background: #E3F2FD;
+            --df-messenger-message-bot-background: #fff;
+            --df-messenger-button-border-color: var(--primary-color);
+            --df-messenger-button-text-color: var(--primary-color);
+            --df-messenger-chat-border-radius: 12px;
+            --df-messenger-input-box-color: #fff;
+            --df-messenger-input-border-color: #e0e0e0;
+            --df-messenger-input-padding: 12px;
+            --df-messenger-send-icon-color: var(--primary-color);
+            --df-messenger-chip-border-color: var(--primary-color);
+            --df-messenger-chat-padding: 16px;
+            --df-messenger-message-bot-border-radius: 12px 2px 12px 12px;
+            --df-messenger-message-user-border-radius: 2px 12px 12px 12px;
+            bottom: 20px;
+            right: 20px;
+            direction: rtl;
+        }
+        
+        /* תיקון RTL לחלונית הצ'אט */
+        df-messenger::part(chat-wrapper) {
+            direction: rtl !important;
+        }
+        
+        df-messenger::part(chat-bubble) {
+            left: auto !important;
+            right: 20px !important;
+        }
+        
+        df-messenger::part(user-message) {
+            text-align: right !important;
+            margin-left: auto !important;
+            margin-right: 0 !important;
+        }
+        
+        df-messenger::part(bot-message) {
+            text-align: right !important;
+            margin-right: auto !important;
+            margin-left: 0 !important;
+        }
+        
+        df-messenger::part(message-list) {
+            direction: rtl !important;
+        }
+        
+        df-messenger::part(input-box-wrapper) {
+            direction: rtl !important;
+        }
+        
+        /* התאמה למובייל */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            h1 {
+                font-size: 26px;
+            }
+            
+            h2 {
+                font-size: 20px;
+            }
+            
+            .info-box {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>מערכת תשאול עובדים</h1>
+    </header>
+    
+    <div class="container">
+        <div class="info-box">
+            <h2>ברוכים הבאים למערכת תשאול העובדים</h2>
+            <p>
+                מערכת זו מאפשרת לנו לאסוף מידע חשוב על יום העבודה שלכם. 
+                המידע שתשתפו יעזור לנו לשפר את תהליכי העבודה ולספק תמיכה טובה יותר.
+            </p>
+            <p>
+                לחצו על אייקון הצ'אט בפינה הימנית התחתונה כדי להתחיל בתשאול.
+                התהליך יארך כ-2-3 דקות בלבד.
+            </p>
+        </div>
+        
+        <div class="info-box">
+            <h2>מה כולל התשאול?</h2>
+            <p>במהלך התשאול תתבקשו לענות על מספר שאלות קצרות:</p>
+            <ul>
+                <li>פרטי זיהוי בסיסיים</li>
+                <li>משימות שהושלמו היום</li>
+                <li>אתגרים שנתקלתם בהם</li>
+                <li>תכניות לימים הקרובים</li>
+                <li>צרכי תמיכה או עזרה</li>
+            </ul>
+        </div>
+        
+        <div class="info-box">
+            <h2>הערה חשובה</h2>
+            <p>
+                כדי שחלונית הצ'אט תעבוד כראוי, יש לוודא שהסוכן שיצרת ב-Dialogflow CX פעיל ומוגדר כראוי.
+                וודא שה-project-id וה-agent-id בקוד HTML מטה תואמים לאלו של הסוכן שלך.
+            </p>
+        </div>
+    </div>
+    
+    <!-- סקריפט של Dialogflow Messenger -->
+    <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
+    
+    <!-- הגדרת חלונית הצ'אט -->
+    <df-messenger
+        project-id="crm-hanivcheret-2025"
+        agent-id="eec6465a-e3b3-4af2-9c53-9d2b667d04c7"
+        language-code="iw"
+        chat-title="תשאול עובדים יומי"
+        chat-icon="https://www.gstatic.com/dialogflow-console/common/assets/integrations/icons/messenger-cx-icon.svg"
+        wait-open="true"
+        expand="true"
+        max-query-length="-1">
+        <df-messenger-chat-bubble
+            chat-title="תשאול עובדים"
+            icon="https://www.gstatic.com/dialogflow-console/common/assets/integrations/icons/messenger-cx-icon.svg">
+        </df-messenger-chat-bubble>
+    </df-messenger>
+    
+    <!-- סקריפט נוסף לתיקון RTL -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // המתנה לטעינת הצ'אט
+            setTimeout(function() {
+                // חיפוש אלמנטים בתוך צל ה-shadow DOM
+                const dfMessenger = document.querySelector('df-messenger');
+                if (dfMessenger) {
+                    // הוספת מאזין לאירוע פתיחת הצ'אט
+                    dfMessenger.addEventListener('df-messenger-loaded', () => {
+                        console.log('חלונית הצ\'אט נטענה');
+                        
+                        // הוספת סגנון נוסף לתיקון RTL
+                        const style = document.createElement('style');
+                        style.textContent = `
+                            df-messenger-chat {
+                                direction: rtl !important;
+                            }
+                            df-message-list {
+                                direction: rtl !important;
+                            }
+                            df-messenger-user-message {
+                                text-align: right !important;
+                            }
+                            df-messenger-bot-message {
+                                text-align: right !important;
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    });
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
